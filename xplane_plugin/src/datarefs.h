@@ -12,7 +12,7 @@ int registerDataRefs();
 int initDataRefs();
 void unregisterData();
 
-int createIntDR(const char* name);
+XPLMDataRef* createIntDR(const char* name, int* valuepointer);
 int createFloatDR(const char* name);
 
 void SetIntCB(void* inRefcon, int inValue);
@@ -20,5 +20,11 @@ int GetIntCB(void* inRefcon);
 
 void SetFloatCB(void* inRefcon, float inValue);
 float GetFloatCB(void* inRefcon);
+
+void createArrays(int nroflines);
+void createIOKompInt(const char* name, const char* type, const char* sys, const char* lp, const char* es);
+void createIOKompButton(const char* name, const char* type, const char* sys, const char* or, const char* es);
+
+void ioFlightLoop();
 
 #endif

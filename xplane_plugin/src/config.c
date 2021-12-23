@@ -22,7 +22,7 @@ void readConfig() {
     }
     strcat(lDirName, "..");
     strcat(lDirName, lSep);
-    sprintf(filename, "%sconfig.txt", lDirName);
+    sprintf(filename, "%slampor.txt", lDirName);
 
     debugLog("read file %s \n", filename);
 
@@ -30,6 +30,8 @@ void readConfig() {
     //XPLMDebugString("jasiokomp.readConfig: getNrOfLines\n");
     nrOfLines = getNrOfLines(filename);
     debugLog("nrOfLines %d\n", nrOfLines);
+
+    createArrays(nrOfLines);
 
     int nrOfDR = 0;
     //XPLMDebugString("jasiokomp.readConfig: getNrOfLines\n");
@@ -46,20 +48,21 @@ void parseLine(char* line) {
 
     char name[256];
     char type[32];
-    char rw[32];
-    char unit[32];
+    char sys[256];
+    char lp[256];
+    char es[256];
     char desc[512];
-    int res2 = sscanf(line, "%s\t%s\t%s\t%s\t%s", name, type, rw, unit, desc);
+    int res2 = sscanf(line, "%s\t%s\t%s\t%s\t%s\t%s", name, type, sys, lp, es, desc);
 
-    if (res2 == 5) {
-        debugLog("found dataref: name %s\t type %s\t unit %s\t desc %s\n", name, type, unit, desc);
-        if (strncmp("int", type, 3) == 0) {
-            createIntDR(name);
-            // sprintf(intList[nrOfInts], "%s", name);
-            // nrOfInts++;
+    if (res2 >= 5) {
+        debugLog("found dataref: name %s\t type %s\t sys %s\t lp %s\t es %s\t desc %s\n", name, type, sys, lp, es, desc);
+        if (strncmp("lampa", type, 5) == 0) {
+
+            createIOKompInt(name, type, sys, lp, es);
         }
-        if (strncmp("float", type, 5) == 0) {
-            createFloatDR(name);
+        if (strncmp("knapp", type, 5) == 0) {
+
+            createIOKompButton(name, type, sys, lp, es);
         }
     }
 }

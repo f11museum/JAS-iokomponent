@@ -73,7 +73,7 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
     /* First we put a new menu item into the plugin menu.
      * This menu item will contain a submenu for us. */
     mySubMenuItem = XPLMAppendMenuItem(XPLMFindPluginsMenu(), /* Put in plugins menu */
-                                       "JASioKomp",          /* Item Title */
+                                       "JASioKomp",           /* Item Title */
                                        0,                     /* Item Ref */
                                        1);                    /* Force English */
 
@@ -137,7 +137,7 @@ float MyFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinc
     //XPLMDebugString("jasiokomp: flightloop\n");
 
     //float elapsed = XPLMGetElapsedTime();
-
+    ioFlightLoop();
     /* Return 1.0 to indicate that we want to be called again in 1 second. */
-    return 1.0;
+    return 0.01;
 }
