@@ -57,12 +57,18 @@ void parseLine(char* line) {
     if (res2 >= 5) {
         debugLog("found dataref: name %s\t type %s\t sys %s\t lp %s\t es %s\t desc %s\n", name, type, sys, lp, es, desc);
         if (strncmp("lampa", type, 5) == 0) {
-
             createIOKompInt(name, type, sys, lp, es);
         }
         if (strncmp("knapp", type, 5) == 0) {
-
             createIOKompButton(name, type, sys, lp, es);
+        }
+        if (strncmp("float", type, 5) == 0) {
+            createFloatDR(name);
+        }
+        if (strncmp("int", type, 3) == 0) {
+            int* valuepointer;
+            valuepointer = malloc(sizeof(int));
+            createIntDR(name, valuepointer);
         }
     }
 }
