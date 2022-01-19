@@ -13,10 +13,14 @@ int initDataRefs();
 void unregisterData();
 
 XPLMDataRef* createIntDR(const char* name, int* valuepointer);
+XPLMDataRef* createIntArrayDR(const char* name, int* valuepointer, const char* type);
 int createFloatDR(const char* name);
 
 void SetIntCB(void* inRefcon, int inValue);
 int GetIntCB(void* inRefcon);
+
+void SetIntArrayCB(void* inRefcon, int* inValue, int index, int len);
+int GetIntArrayCB(void* inRefcon, int* outValue, int index, int len);
 
 void SetFloatCB(void* inRefcon, float inValue);
 float GetFloatCB(void* inRefcon);

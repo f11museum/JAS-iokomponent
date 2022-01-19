@@ -9,6 +9,9 @@ int nrInList = 0;
 int nrInButtonList = 0;
 
 int iokompArraySize = 0;
+int* array_lengths;
+uint64_t* array_lengths_addr;
+
 int* iokomp_lo;
 int* iokomp_lamp;
 int* iokomp_di;
@@ -49,6 +52,48 @@ XPLMDataRef* createIntDR(const char* name, int* valuepointer) {
     } else {
         XPLMSetDatai(customDR, 0);
         debugLog("Created int DR: %s\n", name);
+        return customDR;
+    }
+}
+
+XPLMDataRef* createIntArrayDR(const char* name, int* valuepointer, const char* type) {
+    int len = 0;
+    sscanf(type + 4, "%d]", &len);
+
+    valuepointer = malloc(sizeof(int) * len);
+    memset(valuepointer, 0, sizeof(int) * len);
+
+    array_lengths[nrInList] = len;
+    array_lengths_addr[nrInList] = valuepointer; // kompileringsvarning men jag vill göra detta!
+    debugLog("Array pointer create .%s. value %d mem %d len %d\n", name, nrInList, valuepointer, len);
+    debugLog("saved array pointer %d\n", array_lengths_addr[nrInList]);
+    debugLog("saved array len %d\n", array_lengths[nrInList]);
+    nrInList++;
+    XPLMDataRef customDR = XPLMRegisterDataAccessor(name,
+                                                    xplmType_IntArray, // The types we support
+                                                    1,                 // Writable
+                                                    NULL,
+                                                    NULL, // Integer accessors
+                                                    NULL,
+                                                    NULL, // Float accessors
+                                                    NULL,
+                                                    NULL, // Doubles accessors
+                                                    GetIntArrayCB,
+                                                    SetIntArrayCB, // Int array accessors
+                                                    NULL,
+                                                    NULL, // Float array accessors
+                                                    NULL,
+                                                    NULL, // Raw data accessors
+                                                    valuepointer,
+                                                    valuepointer); // Refcons
+    // Find and intialize our dataref
+
+    customDR = XPLMFindDataRef(name);
+    if (customDR == NULL) {
+        return NULL;
+    } else {
+        XPLMSetDatai(customDR, 0);
+        debugLog("Created int array DR: %s\n", name);
         return customDR;
     }
 }
@@ -109,6 +154,36 @@ int GetIntCB(void* inRefcon) {
     // int out = *((int*)inRefcon);
     return *((int*)inRefcon);
 }
+void SetIntArrayCB(void* inRefcon, int* inValue, int index, int len) {
+    //debugLog("Array set inValue %d index %d, len %d\n", inValue[0], index, len);
+    //memcpy(inRefcon, inValue + (index * sizeof(int)), len * sizeof(int));
+    for (int i = 0; i < len; i++) {
+        ((int*)inRefcon)[index + i] = inValue[0 + i];
+    }
+
+    //*((int*)inRefcon) = inValue;
+}
+int GetIntArrayCB(void* inRefcon, int* outValue, int index, int len) {
+    if (outValue == NULL) {
+        //debugLog("Array look for %d \n", inRefcon);
+        int length = 0;
+        for (int i = 0; i < iokompArraySize; i++) {
+            //debugLog("Array look for %d %d \n", inRefcon, array_lengths_addr[i]);
+            if (array_lengths_addr[i] == inRefcon) { // kompileringsvarning men jag vill göra detta!
+                length = array_lengths[i];
+                //debugLog("Array get length found %d \n", i);
+            }
+        }
+        //debugLog("Array get length returned %d \n", length);
+        //return 3;
+        return length;
+    }
+    memcpy(outValue, inRefcon + (index * sizeof(int)), len * sizeof(int));
+    // debugLog("pointer get value %d mem %d\n", *((int*)inRefcon), inRefcon);
+    // int out = *((int*)inRefcon);
+    //return *((int*)inRefcon);
+    return len;
+}
 
 void SetFloatCB(void* inRefcon, float inValue) {
     *((float*)inRefcon) = inValue;
@@ -163,6 +238,11 @@ void createIOKompButton(const char* name, const char* type, const char* sys, con
 
 void createArrays(int nroflines) {
     iokompArraySize = nroflines;
+
+    array_lengths = malloc(sizeof(int) * iokompArraySize);
+    memset(array_lengths, 0, sizeof(int) * iokompArraySize);
+    array_lengths_addr = malloc(sizeof(uint64_t) * iokompArraySize);
+    memset(array_lengths_addr, 0, sizeof(uint64_t) * iokompArraySize);
 
     iokomp_lo = malloc(sizeof(int) * iokompArraySize);
     memset(iokomp_lo, 0, sizeof(int) * iokompArraySize);
