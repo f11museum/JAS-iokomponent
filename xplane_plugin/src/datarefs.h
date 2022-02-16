@@ -25,6 +25,9 @@ int GetIntArrayCB(void* inRefcon, int* outValue, int index, int len);
 void SetFloatCB(void* inRefcon, float inValue);
 float GetFloatCB(void* inRefcon);
 
+void SetDoubleCB(void* inRefcon, double inValue);
+double GetDoubleCB(void* inRefcon);
+
 void createArrays(int nroflines);
 void createIOKompInt(const char* name, const char* type, const char* sys, const char* lp, const char* es);
 void createIOKompButton(const char* name, const char* type, const char* sys, const char* or, const char* es);

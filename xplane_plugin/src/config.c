@@ -62,6 +62,8 @@ void parseLine(char* line) {
             createIOKompButton(name, type, sys, lp, es);
         } else if (strncmp("float", type, 5) == 0) {
             createFloatDR(name);
+        } else if (strncmp("double", type, 6) == 0) {
+            createDoubleDR(name);
         } else if (strncmp("int[", type, 4) == 0) {
             int* valuepointer;
             valuepointer = malloc(sizeof(int));

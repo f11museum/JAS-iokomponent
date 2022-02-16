@@ -130,7 +130,38 @@ int createFloatDR(const char* name) {
         return 1;
     }
 }
+int createDoubleDR(const char* name) {
 
+    double* valuepointer;
+    valuepointer = malloc(sizeof(double));
+    *valuepointer = 0.0;
+    XPLMDataRef customDR = XPLMRegisterDataAccessor(name,
+                                                    xplmType_Float, // The types we support
+                                                    1,              // Writable
+                                                    NULL,
+                                                    NULL, // Integer accessors
+                                                    NULL,
+                                                    NULL, // Float accessors
+                                                    GetDoubleCB,
+                                                    SetDoubleCB, // Doubles accessors
+                                                    NULL,
+                                                    NULL, // Int array accessors
+                                                    NULL,
+                                                    NULL, // Float array accessors
+                                                    NULL,
+                                                    NULL, // Raw data accessors
+                                                    valuepointer,
+                                                    valuepointer); // Refcons
+    // Find and intialize our dataref
+    customDR = XPLMFindDataRef(name);
+    if (customDR == NULL)
+        return -1;
+    else {
+        XPLMSetDataf(customDR, 0.0);
+        debugLog("Created double DR: %s\n", name);
+        return 1;
+    }
+}
 int initDataRefs() {
 
     // createIntDR("drdb/test/working0");
@@ -190,6 +221,13 @@ void SetFloatCB(void* inRefcon, float inValue) {
 }
 float GetFloatCB(void* inRefcon) {
     return *((float*)inRefcon);
+}
+
+void SetDoubleCB(void* inRefcon, double inValue) {
+    *((double*)inRefcon) = inValue;
+}
+double GetDoubleCB(void* inRefcon) {
+    return *((double*)inRefcon);
 }
 
 void createIOKompInt(const char* name, const char* type, const char* sys, const char* lp, const char* es) {
