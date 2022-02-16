@@ -136,7 +136,7 @@ int createDoubleDR(const char* name) {
     valuepointer = malloc(sizeof(double));
     *valuepointer = 0.0;
     XPLMDataRef customDR = XPLMRegisterDataAccessor(name,
-                                                    xplmType_Float, // The types we support
+                                                    xplmType_Double, // The types we support
                                                     1,              // Writable
                                                     NULL,
                                                     NULL, // Integer accessors
@@ -154,9 +154,11 @@ int createDoubleDR(const char* name) {
                                                     valuepointer); // Refcons
     // Find and intialize our dataref
     customDR = XPLMFindDataRef(name);
-    if (customDR == NULL)
+    if (customDR == NULL) {
+        debugLog("ERROR Created double DR: %s\n", name);
+
         return -1;
-    else {
+    } else {
         XPLMSetDataf(customDR, 0.0);
         debugLog("Created double DR: %s\n", name);
         return 1;
