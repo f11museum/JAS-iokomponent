@@ -15,6 +15,7 @@ void unregisterData();
 XPLMDataRef* createIntDR(const char* name, int* valuepointer);
 XPLMDataRef* createIntArrayDR(const char* name, int* valuepointer, const char* type);
 int createFloatDR(const char* name);
+int createDoubleDR(const char* name);
 
 void SetIntCB(void* inRefcon, int inValue);
 int GetIntCB(void* inRefcon);
